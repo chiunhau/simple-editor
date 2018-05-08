@@ -47,8 +47,8 @@ $ npm run server
 ```html
 <div id="my-editor">
   <ul class="se-extendable">
-    <li class="se-extendable">Item 1</li>
-    <li class="se-extendable">Item 2</li>
+    <li class="se-editable">Item 1</li>
+    <li class="se-editable">Item 2</li>
   </ul>
 </div>
 ```

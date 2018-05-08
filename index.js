@@ -1,14 +1,18 @@
 ($ => {
   $.fn.simpleEditor = function(params) {
     if (typeof params === 'object') {
+      const node = $(this);
 
-      if (params.url) {
-        $(this).attr('data-se-url', params.url)
+      if (params.saveURL) {
+        node.attr('data-se-saveURL', params.saveURL);
       }
 
       $(this).find('.se-editable').each(function() {
         const editable = $(this);
         $(this).attr('contentEditable', 'true');
+        $(this).blur(function() {
+          save(node);
+        })
         return this
       })
 
@@ -18,7 +22,6 @@
         const $plus = $('<button class="se-extend">+</button>');
 
         $plus.click(function() {
-          console.log($clone);
           $(this).before($clone.clone());
         })
 
@@ -38,14 +41,12 @@
 
       }
     }
-
   }
-
 })(jQuery);
 
 function save(node) {
   $.post({
-    url: node.attr('data-se-url'),
+    url: node.attr('data-se-saveURL'),
     data: {
       html: node.html()
     },

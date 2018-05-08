@@ -20,7 +20,7 @@ $ npm run server
 
 <script type="text/javascript">
   $('#my-editor').simpleEditor({
-    url: '/api'
+    saveURL: '/api'
   })
 </script>
 ```

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --open --mode development",
-    "server": "node server.js"
+    "server": "nodemon server.js"
   },
   "keywords": [
     "inline",

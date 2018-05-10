@@ -11,22 +11,22 @@
 <body>
 
   <div id="editor">
-    <h1 class="se-editable">Hello</h1>
-    <p class="se-editable">If you've been following the guides, you should have a solid understanding of some of the webpack basics. Before we continue, let's look into setting up a development environment to make our lives a little easier.</p>
-
-    <div class="box se-extendable">
+    <h1 class="title">Lorem ipsum dolor.</h1>
+    <div class="box">
       <div class="element">
-        <h3 class="se-editable">Title</h3>
-        <p class="se-editable">Content</p>
+        <h3 class="cool-title">Title</h3>
+        <p class="">Content</p>
       </div>
-
     </div>
   </div>
   <script>
 
     $('#editor').simpleEditor({
-      saveURL: '/api'
+      saveURL: '/api',
+      editableSelectors: ['.title'],
+      extendableSelectors: ['.box']
     });
+
   </script>
 
 

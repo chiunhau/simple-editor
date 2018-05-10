@@ -10,7 +10,7 @@ $ npm run server
 // A simple express server at localhost:3001
 
 ```
-
+## Instruction
 ### 1. Init simple-editor
 ```html
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -34,6 +34,7 @@ $ npm run server
 ```
 
 ### 3. Make things `Extendable`.
+You can duplicate the first child element and append it to the end of the `se-extendable` by clicking the add button.
 ```html
 <div id="my-editor">
   <ul class="se-extendable">
@@ -43,15 +44,11 @@ $ npm run server
 </div>
 ```
 
-### 4. Or use them together
-```html
-<div id="my-editor">
-  <ul class="se-extendable">
-    <li class="se-editable">Item 1</li>
-    <li class="se-editable">Item 2</li>
-  </ul>
-</div>
+### 4. Or just set the rules before you go
+```js
+$('#my-editor').simpleEditor({
+  saveURL: '/api',
+  editableSelectors: ['.these-will-be-editable', 'and-these-do-too'],
+  extendableSelectors: ['.some-other-extendable-box']
+})
 ```
-
-## Todo
-[] Save function

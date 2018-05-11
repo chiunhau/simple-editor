@@ -5,7 +5,7 @@
   "main": "/dist/simple-editor.js",
   "scripts": {
     "start": "webpack-dev-server --open --mode development",
-    "server": "nodemon server/server.js",
+    "server": "nodemon demo/server/server.js",
     "build": "webpack --mode production"
   },
   "keywords": [

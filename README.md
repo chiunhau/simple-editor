@@ -72,6 +72,7 @@ $('#my-editor').simpleEditor({
   saveCallback: ..., // or something to do,
   autoSave: false
 })
+```
 
 ## Todo
 - [] File browser api.

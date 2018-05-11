@@ -75,6 +75,6 @@ $('#my-editor').simpleEditor({
 ```
 
 ## Todo
-- [] File browser api.
-- [] Styled `Editable`.
-- [] Add `Duplicatable`, `Draggable`.
+- [ ] File browser api.
+- [ ] Styled `Editable`.
+- [ ] Add `Duplicatable`, `Draggable`.

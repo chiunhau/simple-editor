@@ -9,23 +9,28 @@
   <script src="/simple-editor.js"></script>
 </head>
 <body>
-
+  <button id="go-edit">進入編輯模式</button>
   <div id="editor">
     <h1 class="title">Lorem ipsum dolor.</h1>
     <div class="box">
       <div class="element">
-        <h3 class="cool-title">Title</h3>
+        <h3 class="">Title</h3>
         <p class="">Content</p>
       </div>
     </div>
   </div>
   <script>
 
-    $('#editor').simpleEditor({
-      saveURL: '/api',
-      editableSelectors: ['.title'],
-      extendableSelectors: ['.box']
-    });
+    $(document).ready(function() {
+      $('#go-edit').click(function() {
+        $('#editor').simpleEditor({
+          saveURL: '/api',
+          editableSelectors: ['.title'],
+          extendableSelectors: ['.box']
+        });
+      })
+    })
+
 
   </script>
 

@@ -2,10 +2,10 @@
   "name": "simple-editor",
   "version": "1.0.0",
   "description": "Yet another inline editor.",
-  "main": "index.js",
+  "main": "/dist/simple-editor.js",
   "scripts": {
     "start": "webpack-dev-server --open --mode development",
-    "server": "nodemon server.js",
+    "server": "nodemon server/server.js",
     "build": "webpack --mode production"
   },
   "keywords": [

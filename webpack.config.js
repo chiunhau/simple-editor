@@ -9,7 +9,7 @@ module.exports = {
     libraryTarget: 'umd'
   },
   devServer: {
-    contentBase: './dist',
+    contentBase: './demo',
     port: 3000,
     proxy: {
       "/api/*": {

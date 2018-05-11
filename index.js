@@ -1,44 +1,57 @@
 ($ => {
   $.fn.simpleEditor = function(params) {
+
+    //Initialized a editor
     if (typeof params === 'object') {
-      // if initialize
+
+      //The entry point of simple-editor
       const node = $(this);
 
+      // Storing params
+      node.simpleEditorParams = {}
+
+      // If 'saveURL' is provided
       if (params.saveURL && typeof params.saveURL === 'string') {
-        node.attr('data-se-saveURL', params.saveURL);
+        node.simpleEditorParams.saveURL = params.saveURL;
       }
 
+      // If 'saveCallback' is provided
+      if (params.saveCallback && typeof params.saveCallback === 'function') {
+        node.simpleEditorParams.saveCallback = params.saveCallback;
+      }
+
+      // If 'editableSelectors' is provided
       if (params.editableSelectors && params.editableSelectors.length > 0) {
-        node.attr('data-se-editableSelectors', params.editableSelectors.join());
+        node.simpleEditorParams.editableSelectors = params.editableSelectors;
 
         for (var i = 0; i < params.editableSelectors.length; i++) {
-          $(this).find(params.editableSelectors[i]).each(function() {
+          node.find(params.editableSelectors[i]).each(function() {
             const editable = $(this);
 
-            if (!editable.hasClass()) {
-              editable.addClass('se-editable');
+            if (!editable.hasClass('se-editable')) {
+              editable.addClass('se-auto-editable');
             }
           })
-
         }
       }
 
+      // If 'extendableSelectors' is provided
       if (params.extendableSelectors && params.extendableSelectors.length > 0) {
-        node.attr('data-se-extendableSelectors', params.extendableSelectors.join());
+        node.simpleEditorParams.extendableSelectors = params.extendableSelectors;
 
         for (var i = 0; i < params.extendableSelectors.length; i++) {
-          $(this).find(params.extendableSelectors[i]).each(function() {
+          node.find(params.extendableSelectors[i]).each(function() {
             const extendable = $(this);
 
-            if (!extendable.hasClass()) {
-              extendable.addClass('se-extendable');
+            if (!extendable.hasClass('se-extendable')) {
+              extendable.addClass('se-auto-extendable');
             }
           })
-
         }
       }
 
-      $(this).find('.se-editable').each(function() {
+      // Make user defined tags editable
+      $(this).find('.se-editable, .se-auto-editable').each(function() {
         const editable = $(this);
         $(this).attr('contentEditable', 'true');
         $(this).blur(function() {
@@ -47,7 +60,8 @@
         return this
       })
 
-      $(this).find('.se-extendable').each(function() {
+      // Make user defined tags extendable
+      $(this).find('.se-extendable, .se-auto-extendable').each(function() {
         const $extendable = $(this);
         const $clone = $extendable.children(':first');
         const $plus = $('<button class="se-extend">+</button>');
@@ -76,13 +90,34 @@
 })(jQuery);
 
 function save(node) {
-  $.post({
-    url: node.attr('data-se-saveURL'),
-    data: {
-      html: node.html()
-    },
-    success: function() {
-      console.log('saved');
-    }
+  if (node.simpleEditorParams.saveURL) {
+    $.post({
+      url: node.simpleEditorParams.saveURL,
+      data: {
+        html: node.html()
+      },
+      success: function() {
+        console.log('saved');
+      }
+    })
+  }
+
+  if (node.simpleEditorParams.saveCallback) {
+    node.simpleEditorParams.saveCallback(clean(node));
+  }
+}
+
+// Clean all simpleEditor auto-generated classes and attrs before save
+function clean(node) {
+  var saveNode = node.clone();
+  saveNode.find('.se-auto-editable').each(function() {
+    $(this).removeClass('se-auto-editable');
+    $(this).removeAttr('contentEditable');
+  });
+
+  saveNode.find('.se-editable').each(function() {
+    $(this).removeAttr('contentEditable');
   })
+
+  return saveNode.html()
 }

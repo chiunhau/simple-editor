@@ -9,47 +9,107 @@
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
-  <script src="/simple-editor.js"></script>
+
+  <!-- use this for dev -->
+  <!-- <script src="/simple-editor.js"></script> -->
+
+  <!-- use this for github page deploy -->
+  <script src="../dist/simple-editor.js"></script>
+
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+    }
+
+    h4 {
+      margin: 0px;
+    }
+
+    button {
+      padding: 4px;
+      background-color: #33C3F0;
+      border: none;
+      border-radius: 5px;
+      color: #fff;
+      height: 38px;
+      padding: 0 30px;
+      font-size: 14px;
+    }
+
+    .col {
+      display: inline-block;
+      vertical-align: top;
+      width: 40%;
+      padding: 20px;
+      padding-top: 40px;
+    }
+  </style>
 </head>
 <body>
-  <div id="editor">
-    <h1 class="title">This can be edited.</h1>
-    <h1 class="se-can-copy">This can be copied.</h1>
-    <div class="box">
-      <div class="element">
-        <h3>Title</h3>
-        <p>Content</p>
-      </div>
+  <div class="col">
+    <button id="toggle-init">Edit</button>
+    <div id="editor">
+      <h3 class="se-can-edit">This can be edited.</h3>
+      <h3 class="se-can-copy">This can be copied.</h3>
+      <h3 class="se-can-edit se-can-copy">This can be edited and copied.</h3>
+      <p class="se-can-edit-with-style">This can be edited with styles.</p>
     </div>
   </div>
-  <div>
-    <h4>Before init</h4>
-    <pre>
-      <code class="html hljs" id="before"></code>
-    </pre>
-    <h4>Before save</h4>
-    <pre>
-      <code class="html hljs" id="preview"></code>
-    </pre>
-    <h4>After clean</h4>
-    <pre>
-      <code class="html hljs" id="preview-after"></code>
-    </pre>
+  <div class="col">
+    <div>
+      <h4>Original HTML</h4>
+      <pre>
+        <code class="html hljs" id="before"></code>
+      </pre>
+      <h4>Current HTML under Simple Editor</h4>
+      <pre>
+        <code class="html hljs" id="preview"></code>
+      </pre>
+      <h4>Output HTML</h4>
+      <pre>
+        <code class="html hljs" id="preview-after"></code>
+      </pre>
+    </div>
   </div>
+
   <script>
+    var isInit = false;
 
     $(document).ready(function() {
+      var myEditor = $('#editor');
+
       $('#before').text($('#editor').html());
-      $('#editor').simpleEditor({
-        saveCallback: function(afterClean, beforeClean) {
-          console.log('save');
-          $('#preview').text(beforeClean);
-          $('#preview-after').text(afterClean);
-          hljs.initHighlightingOnLoad();
-        },
-        editableSelectors: ['.title', '.element > *'],
-        extendableSelectors: ['.box'],
-      });
+      $('#toggle-init').click(function() {
+        if (!isInit) {
+          myEditor.simpleEditor({
+            saveCallback: function(afterClean, beforeClean) {
+              console.log('save');
+              $('#preview').text(beforeClean);
+              $('#preview-after').text(afterClean);
+              hljs.initHighlightingOnLoad();
+            },
+            editableSelectors: ['.title', '.element > *'],
+          });
+          $(this).text('Leave');
+          isInit = true;
+        }
+        else {
+          if ($('#preview-after').text().length > 0) {
+            $('#editor').html($('#preview-after').text());
+          }
+          else {
+            $('#editor').html($('#before').text());
+          }
+
+          $('#before').text($('#editor').html());
+          $('#preview').text('');
+          $('#preview-after').text('');
+          $(this).text('Edit');
+          isInit = false;
+        }
+      })
+
     })
 
 

@@ -1,4 +1,4 @@
-import './simple-editor.css';
+import './simple-editor.scss';
 
 ($ => {
   const $addBtn = '<button class="se-add-btn">+</button>';
@@ -32,7 +32,7 @@ import './simple-editor.css';
           node.find(params.editableSelectors[i]).each(function() {
             const editable = $(this);
 
-            if (!editable.hasClass('se-editable')) {
+            if (!editable.hasClass('se-can-edit')) {
               editable.addClass('se-auto-editable');
             }
           })
@@ -55,32 +55,19 @@ import './simple-editor.css';
       }
 
       // Make user defined tags editable
-      node.find('.se-editable, .se-auto-editable').each(function() {
+      node.find('.se-can-edit, .se-auto-editable').each(function() {
         const editable = $(this);
         // $(this).attr('contentEditable', 'true');
+        if (!editable.children().find('.se-auto-wrapper').length > 0) {
+          $(this).wrapInner('<div class="se-auto-wrapper" contentEditable="true"></div>')
+        }
+        else {
+          editable.children().find('.se-auto-wrapper').each(function() {
+            $(this).attr('contentEditable', true);
+          })
+        }
 
-
-        $(this).wrapInner('<div class="se-auto-wrapper" contentEditable="true"></div>')
-        // $(this).parent().append('<div class="se-editable-icon"></div>')
-        $(this).find('.se-auto-wrapper').append('<i class="fas fa-pen-square se-auto-editable-icon"></i>');
-
-        $(this).find('.se-auto-wrapper').blur(function() {
-          save(node);
-        });
-        return this
-      })
-
-      // Make user defined tags extendable
-      node.find('.se-extendable, .se-auto-extendable').each(function() {
-        const $extendable = $(this);
-        const $clone = $extendable.children(':first');
-        const $plus = $('<button class="se-extend">+</button>');
-
-        $plus.click(function() {
-          $(this).before($clone.clone());
-        })
-
-        $extendable.append($plus);
+        $(this).find('.se-auto-wrapper').append('<i class="fas fa-pen-square se-auto-icon se-auto-editable-icon"></i>');
 
         return this
       })
@@ -88,21 +75,68 @@ import './simple-editor.css';
       node.find('.se-can-copy').each(function() {
         const canCopy = $(this);
 
-        $(this).wrapInner('<div class="se-auto-wrapper"></div>')
-        // $(this).parent().append('<div class="se-editable-icon"></div>')
+
+        if (!canCopy.children('.se-auto-wrapper').length > 0) {
+          $(this).wrapInner('<div class="se-auto-wrapper"></div>')
+        }
+        // $(this).parent().append('<div class="se-can-edit-icon"></div>')
         $(this)
           .find('.se-auto-wrapper')
-          .append('<i class="fas fa-plus-square se-auto-can-copy-icon"></i>')
+          .first()
+          .append('<i class="fas fa-clone se-auto-icon se-auto-can-copy-icon"></i>')
           .find('.se-auto-can-copy-icon')
           .first()
           .click(function() {
-            console.log('new copy');
             const newCopy = $(this).parent().parent();
             newCopy.after(newCopy.clone(true, true));
           })
         return this
       })
 
+      node.find('.se-can-edit-with-style').each(function() {
+        const $canEditWithStyle = $(this);
+        // $(this).attr('contentEditable', 'true');
+        if (!$canEditWithStyle.children().find('.se-auto-wrapper').length > 0) {
+          $(this).wrapInner('<div class="se-auto-wrapper" contentEditable="true"></div>')
+        }
+        else {
+          $canEditWithStyle.children().find('.se-auto-wrapper').each(function() {
+            $(this).attr('contentEditable', true);
+          })
+        }
+
+        $canEditWithStyle.find('.se-auto-wrapper').first().append('<i class="fas fa-magic se-auto-icon se-auto-can-edit-with-style-icon"></i>');
+        $canEditWithStyle.find('.se-auto-wrapper').first()
+        .prepend('<ul class="se-style-toolbar" contentEditable="false"><li><i class="fas fa-bold"></i></li><li><i class="fas fa-italic"></i></li></ul>');
+
+        $canEditWithStyle.find('.se-style-toolbar .fa-bold').first()
+        .mousedown(function(e) {
+          e.preventDefault();
+          console.log(getSelectedText());
+          pasteHTMLAtCaret('<span style="font-weight:bold">' + getSelectedText() + '</span>');
+        })
+
+        $canEditWithStyle.find('.se-style-toolbar .fa-italic').first()
+        .mousedown(function(e) {
+          e.preventDefault();
+          console.log(getSelectedText());
+          pasteHTMLAtCaret('<span style="font-style:italic">' + getSelectedText() + '</span>');
+        })
+
+        return this
+
+      })
+
+      var timer;
+      node.on('click keypress',function() {
+        console.log('change');
+        clearTimeout(timer);
+        timer = setTimeout(function() {
+          console.log('auto save');
+          save(node);
+          clearTimeout(timer);
+        }, 3000);
+      })
       return this;
     }
 
@@ -115,6 +149,8 @@ import './simple-editor.css';
 
       }
     }
+
+
   }
 })(jQuery);
 
@@ -147,19 +183,67 @@ function clean(node) {
   saveNode.find('.se-auto-wrapper').contents()
     .unwrap();
 
-  saveNode.find('.se-auto-editable-icon, .se-auto-can-copy-icon').remove();
+  saveNode.find('.se-auto-icon').remove();
 
   saveNode.find('.se-auto-extendable').each(function() {
     $(this).removeClass('se-auto-extendable');
   });
 
-  saveNode.find('.se-editable').each(function() {
+  saveNode.find('.se-can-edit, .se-can-edit-with-style').each(function() {
     $(this).removeAttr('contentEditable');
   });
 
-  saveNode.find('.se-extend').each(function() {
-    $(this).remove();
-  })
+  saveNode.find('.se-style-toolbar').remove();
 
   return saveNode.html()
+}
+
+// Codes below come from https://github.com/webfashionist/RichText/blob/master/src/jquery.richtext.js
+
+function getSelectedText() {
+  var range;
+  if (window.getSelection) {  // all browsers, except IE before version 9
+      range = window.getSelection();
+      return range.toString() ? range.toString() : range.focusNode.nodeValue;
+  } else  if (document.selection.createRange) { // Internet Explorer
+      range = document.selection.createRange();
+      return range.text;
+  }
+  return false;
+}
+
+function pasteHTMLAtCaret(html) {
+  // add HTML code for Internet Explorer
+  var sel, range;
+  if (window.getSelection) {
+      // IE9 and non-IE
+      sel = window.getSelection();
+      if (sel.getRangeAt && sel.rangeCount) {
+          range = sel.getRangeAt(0);
+          range.deleteContents();
+
+          // Range.createContextualFragment() would be useful here but is
+          // only relatively recently standardized and is not supported in
+          // some browsers (IE9, for one)
+          var el = document.createElement("div");
+          el.innerHTML = html;
+          var frag = document.createDocumentFragment(), node, lastNode;
+          while ( (node = el.firstChild) ) {
+              lastNode = frag.appendChild(node);
+          }
+          range.insertNode(frag);
+
+          // Preserve the selection
+          if (lastNode) {
+              range = range.cloneRange();
+              range.setStartAfter(lastNode);
+              range.collapse(true);
+              sel.removeAllRanges();
+              sel.addRange(range);
+          }
+      }
+  } else if (document.selection && document.selection.type !== "Control") {
+      // IE < 9
+      document.selection.createRange().pasteHTML(html);
+  }
 }

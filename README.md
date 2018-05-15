@@ -1,20 +1,17 @@
 # Simple Editor
-Yet another jQuery inline editor.
+🚀An instant jQuery inline editor that works every where.
 
 ## Demo
 ```shell
 $ npm run start
 // Demo frontend site served at localhost:3000
 
-$ npm run server
-// A simple express server at localhost:3001
-
 ```
 ## Instruction
 ### 1. Init simple-editor
 ```html
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="/simple-editor.js"></script>
+<script src="/path/to/simple-editor.js"></script>
 
 <div id="my-editor">
 ...your html markup here...
@@ -28,26 +25,35 @@ $ npm run server
 </script>
 ```
 
-### 2. Make things `Editable`.
+### 2. Add `.se-can-edit` to allow edit.
 You can predefine what should be editable in the markups.
 ```html
 <div id="my-editor">
-  <h1 class="se-editable">Editable title</h1>
-  <p class="se-editable">Editable paragraph</p>
+  <h1 class="se-can-edit">Editable title</h1>
+  <p class="se-can-edit">Editable paragraph</p>
 </div>
 ```
 
-### 3. Make things `Extendable`.
+### 3. Add `.se-can-copy` to allow copy.
 ```html
 <div id="my-editor">
-  <ul class="se-extendable">
-    <li>Item 1</li>
-    <li>Item 2</li>
+  <ul>
+    <li class="se-can-copy">Item 1</li>
   </ul>
 </div>
 ```
 
-### 4. Or just set the rules before you go
+### 4. Add `.se-can-edit-with-style` to allow styled editing.
+Current only provides `bold` and `italic`.
+```html
+<div id="my-editor">
+  <p class="se-can-edit-with-style">
+    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  </p>
+</div>
+```
+
+### 5. Or just set the rules before you go
 Those elements selected by the selectors you provide would automatically become editable or extendable.
 ```js
 $('#my-editor').simpleEditor({
@@ -56,25 +62,3 @@ $('#my-editor').simpleEditor({
   extendableSelectors: ['.some-other-extendable-box']
 })
 ```
-
-## Methods
-### `save`
-This method fires everytime you leave an editable (`onBlur`), but you can call it on your own:
-```js
-$('#my-editor').simpleEditor('save');
-```
-
-To disable auto-save, simply add an option before start:
-
-```js
-$('#my-editor').simpleEditor({
-  saveURL: ..., // somewhere to POST to when saved
-  saveCallback: ..., // or something to do,
-  autoSave: false
-})
-```
-
-## Todo
-- [ ] File browser api.
-- [ ] Styled `Editable`.
-- [ ] Add `Duplicatable`, `Draggable`.

@@ -60,11 +60,11 @@ import './simple-editor.css';
         // $(this).attr('contentEditable', 'true');
 
 
-        $(this).wrapInner('<div class="se-auto-editable-wrapper" contentEditable="true"></div>')
+        $(this).wrapInner('<div class="se-auto-wrapper" contentEditable="true"></div>')
         // $(this).parent().append('<div class="se-editable-icon"></div>')
-        $(this).find('.se-auto-editable-wrapper').append('<i class="fas fa-pen-square se-auto-editable-icon"></i>');
+        $(this).find('.se-auto-wrapper').append('<i class="fas fa-pen-square se-auto-editable-icon"></i>');
 
-        $(this).find('.se-auto-editable-wrapper').blur(function() {
+        $(this).find('.se-auto-wrapper').blur(function() {
           save(node);
         });
         return this
@@ -82,6 +82,24 @@ import './simple-editor.css';
 
         $extendable.append($plus);
 
+        return this
+      })
+
+      node.find('.se-can-copy').each(function() {
+        const canCopy = $(this);
+
+        $(this).wrapInner('<div class="se-auto-wrapper"></div>')
+        // $(this).parent().append('<div class="se-editable-icon"></div>')
+        $(this)
+          .find('.se-auto-wrapper')
+          .append('<i class="fas fa-plus-square se-auto-can-copy-icon"></i>')
+          .find('.se-auto-can-copy-icon')
+          .first()
+          .click(function() {
+            console.log('new copy');
+            const newCopy = $(this).parent().parent();
+            newCopy.after(newCopy.clone(true, true));
+          })
         return this
       })
 
@@ -126,10 +144,10 @@ function clean(node) {
     $(this).removeAttr('contentEditable');
   });
 
-  saveNode.find('.se-auto-editable-wrapper').contents()
+  saveNode.find('.se-auto-wrapper').contents()
     .unwrap();
 
-  saveNode.find('.se-auto-editable-icon').remove();
+  saveNode.find('.se-auto-editable-icon, .se-auto-can-copy-icon').remove();
 
   saveNode.find('.se-auto-extendable').each(function() {
     $(this).removeClass('se-auto-extendable');

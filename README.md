@@ -2,9 +2,9 @@
 🚀An instant jQuery inline editor that works every where.
 Note that this package is under frequent development.
 
-## [Online Demo]('https://chiunhau.github.io/simple-editor/demo/')
-
-## Local demo
+## Demo
+[Online Demo]('https://chiunhau.github.io/simple-editor/demo/')<br/>
+Or run it locally:
 ```shell
 $ npm run start
 // Demo frontend site served at localhost:3000

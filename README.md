@@ -1,7 +1,10 @@
 # Simple Editor
 🚀An instant jQuery inline editor that works every where.
+Note that this package is under frequent development.
 
-## Demo
+## [Online Demo]('https://chiunhau.github.io/simple-editor/demo/')
+
+## Local demo
 ```shell
 $ npm run start
 // Demo frontend site served at localhost:3000
@@ -62,3 +65,7 @@ $('#my-editor').simpleEditor({
   extendableSelectors: ['.some-other-extendable-box']
 })
 ```
+
+## Notes
+### Autosave
+By default, it will autosave within 3 seconds for any changes by POSTing to `saveURL` or firing the `saveCallback`.

@@ -5,30 +5,50 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Demo</title>
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" />
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
   <script src="/simple-editor.js"></script>
 </head>
 <body>
-  <button id="go-edit">進入編輯模式</button>
   <div id="editor">
     <h1 class="title">Lorem ipsum dolor.</h1>
     <div class="box">
-      <div class="element">
-        <h3 class="">Title</h3>
-        <p class="">Content</p>
+      <div class="element se-can-copy">
+        <h3>Title</h3>
+        <p>Content</p>
       </div>
     </div>
+  </div>
+  <div>
+    <h4>Before init</h4>
+    <pre>
+      <code class="html hljs" id="before"></code>
+    </pre>
+    <h4>Before save</h4>
+    <pre>
+      <code class="html hljs" id="preview"></code>
+    </pre>
+    <h4>After clean</h4>
+    <pre>
+      <code class="html hljs" id="preview-after"></code>
+    </pre>
   </div>
   <script>
 
     $(document).ready(function() {
-      $('#go-edit').click(function() {
-        $('#editor').simpleEditor({
-          saveURL: '/api',
-          editableSelectors: ['.title'],
-          extendableSelectors: ['.box']
-        });
-      })
+      $('#before').text($('#editor').html());
+      $('#editor').simpleEditor({
+        saveCallback: function(afterClean, beforeClean) {
+          console.log('save');
+          $('#preview').text(beforeClean);
+          $('#preview-after').text(afterClean);
+          hljs.initHighlightingOnLoad();
+        },
+        editableSelectors: ['.title', '.element > *'],
+        extendableSelectors: ['.box'],
+      });
     })
 
 

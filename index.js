@@ -1,4 +1,8 @@
+import './simple-editor.css';
+
 ($ => {
+  const $addBtn = '<button class="se-add-btn">+</button>';
+
   $.fn.simpleEditor = function(params) {
 
     //Initialized a editor
@@ -51,17 +55,23 @@
       }
 
       // Make user defined tags editable
-      $(this).find('.se-editable, .se-auto-editable').each(function() {
+      node.find('.se-editable, .se-auto-editable').each(function() {
         const editable = $(this);
-        $(this).attr('contentEditable', 'true');
-        $(this).blur(function() {
+        // $(this).attr('contentEditable', 'true');
+
+
+        $(this).wrapInner('<div class="se-auto-editable-wrapper" contentEditable="true"></div>')
+        // $(this).parent().append('<div class="se-editable-icon"></div>')
+        $(this).find('.se-auto-editable-wrapper').append('<i class="fas fa-pen-square se-auto-editable-icon"></i>');
+
+        $(this).find('.se-auto-editable-wrapper').blur(function() {
           save(node);
-        })
+        });
         return this
       })
 
       // Make user defined tags extendable
-      $(this).find('.se-extendable, .se-auto-extendable').each(function() {
+      node.find('.se-extendable, .se-auto-extendable').each(function() {
         const $extendable = $(this);
         const $clone = $extendable.children(':first');
         const $plus = $('<button class="se-extend">+</button>');
@@ -74,6 +84,7 @@
 
         return this
       })
+
       return this;
     }
 
@@ -94,7 +105,7 @@ function save(node) {
     $.post({
       url: node.simpleEditorParams.saveURL,
       data: {
-        html: node.html()
+        html: clean(node)
       },
       success: function() {
         console.log('saved');
@@ -103,7 +114,7 @@ function save(node) {
   }
 
   if (node.simpleEditorParams.saveCallback) {
-    node.simpleEditorParams.saveCallback(clean(node));
+    node.simpleEditorParams.saveCallback(clean(node), node.html());
   }
 }
 
@@ -115,8 +126,21 @@ function clean(node) {
     $(this).removeAttr('contentEditable');
   });
 
+  saveNode.find('.se-auto-editable-wrapper').contents()
+    .unwrap();
+
+  saveNode.find('.se-auto-editable-icon').remove();
+
+  saveNode.find('.se-auto-extendable').each(function() {
+    $(this).removeClass('se-auto-extendable');
+  });
+
   saveNode.find('.se-editable').each(function() {
     $(this).removeAttr('contentEditable');
+  });
+
+  saveNode.find('.se-extend').each(function() {
+    $(this).remove();
   })
 
   return saveNode.html()

@@ -11,10 +11,10 @@
   <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
 
   <!-- use this for dev -->
-  <!-- <script src="/simple-editor.js"></script> -->
+  <script src="/simple-editor.js"></script>
 
   <!-- use this for github page deploy -->
-  <script src="../dist/simple-editor.js"></script>
+  <!-- <script src="../dist/simple-editor.js"></script> -->
 
   <style>
     body, html {
@@ -89,7 +89,19 @@
               $('#preview-after').text(afterClean);
               hljs.initHighlightingOnLoad();
             },
-            editableSelectors: ['.title', '.element > *'],
+            fileBrowserCallback: function(field_name, win) {
+              console.log('enter browser');
+              myEditor.openWindow({
+                file: '/fake-browser.html',
+                width: 900,
+                height: 450,
+              }, {
+                setUrl: function(url) {
+                  console.log(url);
+                  win.document.getElementById(field_name).value = url;
+                }
+              })
+            },
           });
           $(this).text('Leave');
           isInit = true;

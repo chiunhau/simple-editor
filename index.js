@@ -1,7 +1,10 @@
 import './simple-editor.scss';
+import dia from './dialogue.js';
 
 ($ => {
   const $addBtn = '<button class="se-add-btn">+</button>';
+  const dialogue = dia($);
+
 
   $.fn.simpleEditor = function(params) {
 
@@ -12,7 +15,7 @@ import './simple-editor.scss';
       const node = $(this);
 
       // Storing params
-      node.simpleEditorParams = {}
+      node.simpleEditorParams = params
 
       // If 'saveURL' is provided
       if (params.saveURL && typeof params.saveURL === 'string') {
@@ -107,7 +110,7 @@ import './simple-editor.scss';
 
         $canEditWithStyle.find('.se-auto-wrapper').first().append('<i class="fas fa-magic se-auto-icon se-auto-can-edit-with-style-icon"></i>');
         $canEditWithStyle.find('.se-auto-wrapper').first()
-        .prepend('<ul class="se-style-toolbar" contentEditable="false"><li><i class="fas fa-bold"></i></li><li><i class="fas fa-italic"></i></li></ul>');
+        .prepend('<ul class="se-style-toolbar" contentEditable="false"><li><i class="fas fa-bold"></i></li><li><i class="fas fa-italic"></i></li><li><i class="fas fa-image"></i></li></ul>');
 
         $canEditWithStyle.find('.se-style-toolbar .fa-bold').first()
         .mousedown(function(e) {
@@ -121,6 +124,13 @@ import './simple-editor.scss';
           e.preventDefault();
           console.log(getSelectedText());
           pasteHTMLAtCaret('<span style="font-style:italic">' + getSelectedText() + '</span>');
+        })
+
+        $canEditWithStyle.find('.se-style-toolbar .fa-image').first()
+        .mousedown(function(e) {
+          e.preventDefault();
+          dialogue(node, node.simpleEditorParams.fileBrowserCallback);
+          ;
         })
 
         return this
@@ -151,6 +161,24 @@ import './simple-editor.scss';
     }
 
 
+  }
+
+  window.openWindow = {};
+
+  $.fn.openWindow = function(outsideOptions, insideOptions) {
+    $(this).append($('<iframe>', {
+      src: outsideOptions.file,
+      width: outsideOptions.width,
+      height: outsideOptions.height,
+      class: 'se-file-browser-iframe',
+      id: 'se-file-browser-iframe'
+    }))
+
+    window.openWindow = {};
+    window.openWindow.params = insideOptions;
+    window.openWindow.close = function() {
+      $('#se-file-browser-iframe').remove();
+    }
   }
 })(jQuery);
 

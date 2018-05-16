@@ -25,6 +25,51 @@
     display: inline-block;
     width: 20px;
     height: 20px;
+    text-align: center;
+    line-height: 20px;
+
+    &:hover {
+      cursor: pointer;
+      background-color: #fafafa;
+    }
 
   }
+}
+
+.se-file-browser-dialogue {
+  position: fixed;
+  z-index: 100;
+  top: 50%;
+  left: 0;
+  right: 0;
+  margin: auto;
+  transform: translateY(-50%);
+  background-color: #fff;
+  border: 1px solid #aaa;
+  width: 200px;
+  text-align: center;
+  padding: 20px;
+
+  input {
+    display: inline-block;
+    height: 28px;
+  }
+
+  button {
+    display: inline-block;
+    width: 60px;
+    height: 28px;
+    padding: 0;
+  }
+}
+
+.se-file-browser-iframe {
+  position: fixed;
+  z-index: 200;
+  top: 50%;
+  left: 0;
+  right: 0;
+  margin: auto;
+  transform: translateY(-50%);
+  background-color: #fff;
 }

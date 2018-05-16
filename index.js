@@ -42,6 +42,20 @@ import dia from './dialogue.js';
         }
       }
 
+      if (params.styledEditableSelectors && params.styledEditableSelectors.length > 0) {
+        node.simpleEditorParams.styledEditableSelectors = params.styledEditableSelectors;
+
+        for (var i = 0; i < params.styledEditableSelectors.length; i++) {
+          node.find(params.styledEditableSelectors[i]).each(function() {
+            const styledEditable = $(this);
+
+            if (!styledEditable.hasClass('se-can-edit-with-style')) {
+              styledEditable.addClass('se-auto-can-edit-with-style');
+            }
+          })
+        }
+      }
+
       // If 'extendableSelectors' is provided
       if (params.extendableSelectors && params.extendableSelectors.length > 0) {
         node.simpleEditorParams.extendableSelectors = params.extendableSelectors;
@@ -96,7 +110,7 @@ import dia from './dialogue.js';
         return this
       })
 
-      node.find('.se-can-edit-with-style').each(function() {
+      node.find('.se-can-edit-with-style, .se-auto-can-edit-with-style').each(function() {
         const $canEditWithStyle = $(this);
         // $(this).attr('contentEditable', 'true');
         if (!$canEditWithStyle.children().find('.se-auto-wrapper').length > 0) {
@@ -221,7 +235,7 @@ function clean(node) {
     $(this).removeAttr('contentEditable');
   });
 
-  saveNode.find('.se-style-toolbar').remove();
+  saveNode.find('.se-style-toolbar, .se-file-browser-dialogue, .se-file-browser-iframe').remove();
 
   return saveNode.html()
 }

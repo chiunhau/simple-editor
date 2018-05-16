@@ -50,6 +50,7 @@
   <div class="col">
     <button id="toggle-init">Edit</button>
     <div id="editor">
+      <p class="styled">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Porro eum mollitia at tempora placeat eos impedit recusandae illo. Sint quae, numquam veniam voluptates asperiores ut suscipit commodi, officiis doloribus sequi!</p>
       <h3 class="se-can-edit">This can be edited.</h3>
       <h3 class="se-can-copy">This can be copied.</h3>
       <h3 class="se-can-edit se-can-copy">This can be edited and copied.</h3>
@@ -83,6 +84,8 @@
       $('#toggle-init').click(function() {
         if (!isInit) {
           myEditor.simpleEditor({
+            editableSelectors: ['.title'],
+            styledEditableSelectors: ['.styled'],
             saveCallback: function(afterClean, beforeClean) {
               console.log('save');
               $('#preview').text(beforeClean);

@@ -69,3 +69,7 @@ $('#my-editor').simpleEditor({
 ## Notes
 ### Autosave
 By default, it will autosave within 3 seconds for any changes by POSTing to `saveURL` or firing the `saveCallback`.
+
+## Todos
+- [ ] Change image
+- [ ] Insert image

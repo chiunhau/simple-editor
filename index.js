@@ -113,6 +113,10 @@ import dia from './dialogue.js';
       node.find('.se-can-edit-with-style, .se-auto-can-edit-with-style').each(function() {
         const $canEditWithStyle = $(this);
         // $(this).attr('contentEditable', 'true');
+        const mediaBox = $('<div class="se-auto-media-box" contenteditable="false">Replace</div>');
+
+        $canEditWithStyle.append(mediaBox);
+
         if (!$canEditWithStyle.children().find('.se-auto-wrapper').length > 0) {
           $(this).wrapInner('<div class="se-auto-wrapper" contentEditable="true"></div>')
         }
@@ -122,6 +126,30 @@ import dia from './dialogue.js';
           })
         }
 
+        $canEditWithStyle.find('img').each(function() {
+          $(this).attr('tabindex', -1);
+          $(this).click(function() {
+            $(this).addClass('-focused');
+
+            mediaBox.css({
+              left: $(this).position().left + ($(this).width() - mediaBox.width()) / 2 + 'px',
+              top: $(this).position().top - 48 + 'px',
+            });
+            mediaBox.addClass('-active');
+          })
+          var thisImg = $(this);
+          $(document).click(function(e) {
+            if (!$(e.target).is(thisImg) && !$(e.target).is('.se-auto-media-box')) {
+              thisImg.removeClass('-focused');
+              mediaBox.removeClass('-active');
+            }
+          })
+
+          // $(this).focusout(function(e) {
+          //
+          // })
+
+        })
         $canEditWithStyle.find('.se-auto-wrapper').first().append('<i class="fas fa-magic se-auto-icon se-auto-can-edit-with-style-icon"></i>');
         $canEditWithStyle.find('.se-auto-wrapper').first()
         .prepend('<ul class="se-style-toolbar" contentEditable="false"><li><i class="fas fa-bold"></i></li><li><i class="fas fa-italic"></i></li><li><i class="fas fa-image"></i></li></ul>');

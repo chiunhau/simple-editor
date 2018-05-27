@@ -110,11 +110,14 @@ import dia from './dialogue.js';
         return this
       })
 
+      const mediaBoxSrc = $('<div class="se-auto-media-box" contenteditable="false">Replace</div>');
+
       node.find('.se-can-edit-with-style, .se-auto-can-edit-with-style').each(function() {
+        console.log($(this));
         const $canEditWithStyle = $(this);
         // $(this).attr('contentEditable', 'true');
-        const mediaBox = $('<div class="se-auto-media-box" contenteditable="false">Replace</div>');
 
+        const mediaBox = mediaBoxSrc.clone();
         $canEditWithStyle.append(mediaBox);
 
         if (!$canEditWithStyle.children().find('.se-auto-wrapper').length > 0) {
@@ -126,24 +129,47 @@ import dia from './dialogue.js';
           })
         }
 
-        $canEditWithStyle.find('img').each(function() {
+        var activeImg;
+
+
+        mediaBox.click(function() {
+          console.log(activeImg);
+          node.simpleEditorParams.fileBrowserCallback(activeImg, window);
+        })
+
+        $canEditWithStyle.find('img').each(function(index, element) {
+          console.log(index);
           $(this).attr('tabindex', -1);
           $(this).click(function() {
+            activeImg = $(this);
             $(this).addClass('-focused');
-
+            mediaBox.addClass('-active');
             mediaBox.css({
               left: $(this).position().left + ($(this).width() - mediaBox.width()) / 2 + 'px',
               top: $(this).position().top - 48 + 'px',
             });
-            mediaBox.addClass('-active');
+
+
+            console.log(mediaBox);
           })
           var thisImg = $(this);
-          $(document).click(function(e) {
-            if (!$(e.target).is(thisImg) && !$(e.target).is('.se-auto-media-box')) {
-              thisImg.removeClass('-focused');
-              mediaBox.removeClass('-active');
+          // $(document).click(function(e) {
+          //   if (!$(e.target).is(thisImg) && !$(e.target).is('.se-auto-media-box')) {
+          //
+          //   }
+          // })
+
+          $(this).focusout(function(e) {
+            thisImg.removeClass('-focused');
+            if (thisImg.hasClass('-focused')) {
+              window.setTimeout(function() {
+                mediaBox.removeClass('-active');
+              }, 100);
             }
+
+
           })
+
 
           // $(this).focusout(function(e) {
           //
@@ -259,11 +285,12 @@ function clean(node) {
     $(this).removeClass('se-auto-extendable');
   });
 
-  saveNode.find('.se-can-edit, .se-can-edit-with-style').each(function() {
+  saveNode.find('.se-can-edit, .se-can-edit-with-style, .se-auto-can-edit, .se-auto-can-edit-with-style').each(function() {
     $(this).removeAttr('contentEditable');
+    $(this).removeClass(['se-auto-can-edit', 'se-auto-can-edit-with-style']);
   });
 
-  saveNode.find('.se-style-toolbar, .se-file-browser-dialogue, .se-file-browser-iframe').remove();
+  saveNode.find('.se-style-toolbar, .se-file-browser-dialogue, .se-file-browser-iframe, .se-auto-media-box').remove();
 
   return saveNode.html()
 }

@@ -56,7 +56,9 @@
       <h3 class="se-can-edit se-can-copy">This can be edited and copied.</h3>
       <p class="se-can-edit-with-style">
         This can be edited with styles.
-        <img src="http://via.placeholder.com/350x150" alt="">
+        <img class="img1" src="http://via.placeholder.com/350x150" alt="">
+        <img class="img2" src="http://via.placeholder.com/350x150" alt="">
+        <img class="img3" src="http://via.placeholder.com/350x150" alt="">
       </p>
     </div>
   </div>
@@ -95,7 +97,7 @@
               $('#preview-after').text(afterClean);
               hljs.initHighlightingOnLoad();
             },
-            fileBrowserCallback: function(field_name, win) {
+            fileBrowserCallback: function(element, win) {
               console.log('enter browser');
               myEditor.openWindow({
                 file: '/fake-browser.html',
@@ -104,7 +106,10 @@
               }, {
                 setUrl: function(url) {
                   console.log(url);
-                  win.document.getElementById(field_name).value = url;
+                  console.log(element);
+                  element.attr('src', url)
+                  // win.document.getElementById(field_name).value = url;
+
                 }
               })
             },

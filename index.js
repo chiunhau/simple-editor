@@ -1,11 +1,6 @@
 import './simple-editor.scss';
-import dia from './dialogue.js';
 
 ($ => {
-  const $addBtn = '<button class="se-add-btn">+</button>';
-  const dialogue = dia($);
-
-
   $.fn.simpleEditor = function(params) {
 
     //Initialized a editor
@@ -28,25 +23,25 @@ import dia from './dialogue.js';
       }
 
       // If 'editableSelectors' is provided
-      if (params.editableSelectors && params.editableSelectors.length > 0) {
-        node.simpleEditorParams.editableSelectors = params.editableSelectors;
+      if (params.canEdit && params.canEdit.length > 0) {
+        node.simpleEditorParams.canEdit = params.canEdit;
 
-        for (var i = 0; i < params.editableSelectors.length; i++) {
-          node.find(params.editableSelectors[i]).each(function() {
+        for (var i = 0; i < params.canEdit.length; i++) {
+          node.find(params.canEdit[i]).each(function() {
             const editable = $(this);
 
             if (!editable.hasClass('se-can-edit')) {
-              editable.addClass('se-auto-editable');
+              editable.addClass('se-auto-can-edit');
             }
           })
         }
       }
 
-      if (params.styledEditableSelectors && params.styledEditableSelectors.length > 0) {
-        node.simpleEditorParams.styledEditableSelectors = params.styledEditableSelectors;
+      if (params.canEditWithStyle && params.canEditWithStyle.length > 0) {
+        node.simpleEditorParams.canEditWithStyle = params.canEditWithStyle;
 
-        for (var i = 0; i < params.styledEditableSelectors.length; i++) {
-          node.find(params.styledEditableSelectors[i]).each(function() {
+        for (var i = 0; i < params.canEditWithStyle.length; i++) {
+          node.find(params.canEditWithStyle[i]).each(function() {
             const styledEditable = $(this);
 
             if (!styledEditable.hasClass('se-can-edit-with-style')) {
@@ -57,22 +52,22 @@ import dia from './dialogue.js';
       }
 
       // If 'extendableSelectors' is provided
-      if (params.extendableSelectors && params.extendableSelectors.length > 0) {
-        node.simpleEditorParams.extendableSelectors = params.extendableSelectors;
+      if (params.canCopy && params.canCopy.length > 0) {
+        node.simpleEditorParams.canCopy = params.canCopy;
 
-        for (var i = 0; i < params.extendableSelectors.length; i++) {
-          node.find(params.extendableSelectors[i]).each(function() {
+        for (var i = 0; i < params.canCopy.length; i++) {
+          node.find(params.canCopy[i]).each(function() {
             const extendable = $(this);
 
-            if (!extendable.hasClass('se-extendable')) {
-              extendable.addClass('se-auto-extendable');
+            if (!extendable.hasClass('can-copy')) {
+              extendable.addClass('se-auto-can-copy');
             }
           })
         }
       }
 
       // Make user defined tags editable
-      node.find('.se-can-edit, .se-auto-editable').each(function() {
+      node.find('.se-can-edit, .se-auto-can-edit').each(function() {
         const editable = $(this);
         // $(this).attr('contentEditable', 'true');
         if (!editable.children().find('.se-auto-wrapper').length > 0) {
@@ -89,7 +84,7 @@ import dia from './dialogue.js';
         return this
       })
 
-      node.find('.se-can-copy').each(function() {
+      node.find('.se-can-copy, .se-auto-can-copy').each(function() {
         const canCopy = $(this);
 
 
@@ -166,15 +161,7 @@ import dia from './dialogue.js';
                 mediaBox.removeClass('-active');
               }, 100);
             }
-
-
           })
-
-
-          // $(this).focusout(function(e) {
-          //
-          // })
-
         })
         $canEditWithStyle.find('.se-auto-wrapper').first().append('<i class="fas fa-magic se-auto-icon se-auto-can-edit-with-style-icon"></i>');
         $canEditWithStyle.find('.se-auto-wrapper').first()
@@ -194,12 +181,12 @@ import dia from './dialogue.js';
           pasteHTMLAtCaret('<span style="font-style:italic">' + getSelectedText() + '</span>');
         })
 
-        $canEditWithStyle.find('.se-style-toolbar .fa-image').first()
-        .mousedown(function(e) {
-          e.preventDefault();
-          dialogue(node, node.simpleEditorParams.fileBrowserCallback);
-          ;
-        })
+        // $canEditWithStyle.find('.se-style-toolbar .fa-image').first()
+        // .mousedown(function(e) {
+        //   e.preventDefault();
+        //   dialogue(node, node.simpleEditorParams.fileBrowserCallback);
+        //   ;
+        // })
 
         return this
 
@@ -227,8 +214,6 @@ import dia from './dialogue.js';
 
       }
     }
-
-
   }
 
   window.openWindow = {};
@@ -281,11 +266,12 @@ function clean(node) {
 
   saveNode.find('.se-auto-icon').remove();
 
-  saveNode.find('.se-auto-extendable').each(function() {
-    $(this).removeClass('se-auto-extendable');
+  saveNode.find('.se-auto-can-copy').each(function() {
+    $(this).removeClass('se-auto-can-copy');
   });
 
   saveNode.find('.se-can-edit, .se-can-edit-with-style, .se-auto-can-edit, .se-auto-can-edit-with-style').each(function() {
+    $('img', $(this)).removeAttr('tabindex');
     $(this).removeAttr('contentEditable');
     $(this).removeClass(['se-auto-can-edit', 'se-auto-can-edit-with-style']);
   });
